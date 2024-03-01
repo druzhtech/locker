@@ -1,23 +1,13 @@
-// SPDX-License-Identifier: GPL-3.0
+// SPDX-License-Identifier: MIT
 
 pragma solidity >=0.8.2 <0.9.0;
 
-library ClamingLibrary {}
+import "./ILocker.sol";
 
-interface IClaiming {
-    function createOrderWithAmount(
-        address[] memory users,
-        uint256 amount
-    ) external payable returns (bytes32 orderId);
-
-    function claim(bytes32 orderId) external returns (bool result);
-}
-
-contract Claiming is IClaiming {
+contract Locker is ILocker{
     address public owner;
     uint256 public feePrice;
     uint256 public feeAmount;
-    uint256 public constant version = 1;
 
     // cutomers => orderId
     mapping(address => bytes32) customers;
@@ -39,7 +29,7 @@ contract Claiming is IClaiming {
         _;
     }
 
-    constructor(uint256 _fee, uint256 _version) {
+    constructor(uint256 _fee) {
         owner = msg.sender;
         feePrice = _fee;
     }
@@ -95,17 +85,5 @@ contract Claiming is IClaiming {
 
     function withdraw() public onlyOwner {
         payable(msg.sender).transfer(feeAmount);
-    }
-}
-
-contract ClaimingCustomer {
-    function createClaiming(
-        address claimService,
-        address[] memory users,
-        uint256 amount
-    ) public {
-        IClaiming claim = IClaiming(claimService);
-
-        claim.createOrderWithAmount(users, amount);
     }
 }
