@@ -10,10 +10,10 @@ contract Locker is ILocker{
     uint256 public feeAmount;
 
     // cutomers => orderId
-    mapping(address => bytes32) customers;
+    mapping(address => bytes32[]) public customers;
 
     // orderId => (user => amount)
-    mapping(bytes32 => mapping(address => uint256)) orders;
+    mapping(bytes32 => mapping(address => uint256)) public orders;
 
     event OrderCreated(
         bytes32 indexed orderId,
@@ -49,6 +49,8 @@ contract Locker is ILocker{
                 orders[orderId][users[count]] = amount;
             }
 
+            customers[msg.sender].push(orderId);
+
             emit OrderCreated(orderId, msg.sender, users, amount);
         } else {
             revert NotEnoughValue(allAmount, msg.value);
@@ -65,6 +67,8 @@ contract Locker is ILocker{
         for (uint8 count = 0; count < users.length; count++) {
             orders[orderId][users[count]] = amount;
         }
+
+            customers[msg.sender].push(orderId);
 
         emit OrderCreated(orderId, msg.sender, users, amount);
     }
