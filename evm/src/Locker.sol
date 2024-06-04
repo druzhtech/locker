@@ -4,7 +4,7 @@ pragma solidity >=0.8.2 <0.9.0;
 
 import "./ILocker.sol";
 
-contract Locker is ILocker{
+contract Locker is ILocker {
     address public owner;
     uint256 public feePrice;
     uint256 public feeAmount;
@@ -68,7 +68,7 @@ contract Locker is ILocker{
             orders[orderId][users[count]] = amount;
         }
 
-            customers[msg.sender].push(orderId);
+        customers[msg.sender].push(orderId);
 
         emit OrderCreated(orderId, msg.sender, users, amount);
     }
